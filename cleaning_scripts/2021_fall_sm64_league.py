@@ -46,14 +46,14 @@ if __name__ == '__main__':
     # Inital PBs
     sheet_url = 'https://docs.google.com/spreadsheets/d/1DJ75Qn_CNoPHVszn1-fhqckWL2r6Sbiv0N3KRecxD4Y/edit#gid=726424330'
     csv_export_url = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
-    players = pd.read_csv(csv_export_url, usecols = ['Player','120 Star PB', '70 Star PB', '16 Star PB'])    
+    players = pd.read_csv(csv_export_url, usecols = ['Player', 'Team', '120 Star PB', '70 Star PB', '16 Star PB'])    
     players['120 Star PB'] = pd.to_timedelta(players['120 Star PB'])
     players['70 Star PB'] = pd.to_timedelta(players['70 Star PB'])
     players['16 Star PB'] = pd.to_timedelta(players['16 Star PB'])
     players['Player'] = players['Player'].str.lower()
     players.loc[players.Player == 'thetoiletboyz', ['Player']] = 'toilet64_'
     players.set_index('Player', inplace = True)
-    players.loc['camgibb'] = pd.to_timedelta(['2:30:00','0:55:45','0:18:49'])
+    players.loc['camgibb'] = ['sennai', *pd.to_timedelta(['2:30:00','0:55:45','0:18:49'])]
 
     # Runs Accepted
     sheet_url = 'https://docs.google.com/spreadsheets/d/1DJ75Qn_CNoPHVszn1-fhqckWL2r6Sbiv0N3KRecxD4Y/edit#gid=431627827'
@@ -120,13 +120,16 @@ if __name__ == '__main__':
     players['120 Star PB'] = players['120 Star PB'].astype(str).apply(lambda x: x[7:])
     players['70 Star PB'] = players['70 Star PB'].astype(str).apply(lambda x: x[7:])
     players['16 Star PB'] = players['16 Star PB'].astype(str).apply(lambda x: x[7:])
-    teams = runs[['Player', 'Team']].drop_duplicates().set_index('Player').to_dict()['Team']
-    players['Team'] = None
-    for key, val in teams.items():
-        players.loc[key,'Team'] = val
     players = players.sort_values('Points', ascending = False)
     players.reset_index(inplace = True)
     players.rename(columns={'index':'Player'}, inplace = True)
+    print(players.columns)
+    
+    # Change teams to captain names
+    teams = players[['Player', 'Team']].drop_duplicates().set_index('Player').to_dict()['Team']
+    runs['Team'] = runs['Player'].apply(lambda x: teams[x])
+    runs['Team'] = runs['Team'].str.lower()
+    players['Team'] = players['Team'].str.lower()
     
     # Final formatting before exporting
     players = players[['Player', 'Team', '16 Star PB', '70 Star PB', '120 Star PB', 'Points']]
