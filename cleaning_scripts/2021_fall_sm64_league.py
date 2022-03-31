@@ -53,7 +53,8 @@ if __name__ == '__main__':
     players['Player'] = players['Player'].str.lower()
     players.loc[players.Player == 'thetoiletboyz', ['Player']] = 'toilet64_'
     players.set_index('Player', inplace = True)
-    players.loc['camgibb'] = ['sennai', *pd.to_timedelta(['2:30:00','0:55:45','0:18:49'])]
+    players.loc['camgibb', ['120 Star PB', '70 Star PB', '16 Star PB']] = pd.to_timedelta(['2:30:00','0:55:45','0:18:49'])
+    players.loc['camgibb', 'Team'] = 'sennai'
 
     # Runs Accepted
     sheet_url = 'https://docs.google.com/spreadsheets/d/1DJ75Qn_CNoPHVszn1-fhqckWL2r6Sbiv0N3KRecxD4Y/edit#gid=431627827'
@@ -123,7 +124,6 @@ if __name__ == '__main__':
     players = players.sort_values('Points', ascending = False)
     players.reset_index(inplace = True)
     players.rename(columns={'index':'Player'}, inplace = True)
-    print(players.columns)
     
     # Change teams to captain names
     teams = players[['Player', 'Team']].drop_duplicates().set_index('Player').to_dict()['Team']
