@@ -118,6 +118,13 @@ if __name__ == '__main__':
     teams = players['Team'].to_dict()
     runs['Team'] = runs['Player'].apply(lambda x : teams[x])
     runs = runs[['Date Accepted','Player','Team','Category','Time','Points']]
+    
+    # Format timedelta strings
+    players['Initial 0 Star PB'] = players['Initial 0 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Initial 1 Star PB'] = players['Initial 1 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Final 0 Star PB'] = players['Final 0 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Final 1 Star PB'] = players['Final 1 Star PB'].astype(str).apply(lambda x: x[7:])
+    runs['Time'] = runs['Time'].astype(str).apply(lambda x: x[7:])
 
     # CSV
     players.to_csv('../data/2022-03_sblj_league_players.csv')

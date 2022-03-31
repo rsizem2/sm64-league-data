@@ -128,8 +128,10 @@ if __name__ == '__main__':
     players.reset_index(inplace = True)
     players.rename(columns={'index':'Player'}, inplace = True)
     
+    # Final formatting before exporting
     players = players[['Player', 'Team', '16 Star PB', '70 Star PB', '120 Star PB', 'Points']]
     runs = runs[['Date Accepted', 'Player', 'Team', 'Category', 'Time', 'Points']]
+    runs['Time'] = runs['Time'].astype(str).apply(lambda x: x[7:])
     
     # CSV
     players.to_csv('../data/2021-10_sm64_league_players.csv')
