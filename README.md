@@ -2,10 +2,6 @@
 
 The SM64 leagues are a series of reoccurring events where Super Mario 64 speedrunners are drafted onto teams and earn points by getting new PBs. This repository contains all the player and run data gathered by the discord bot cleaned up for easier data analysis.
 
-# Repository 
-
-This repository provides cleaning scripts and tidy versions of player and PB data for each league.
-
 ## Fall 2021 - SM64 League
 
 The first SM64 league, which focused on the 16 star, 70 star and 120 star categories. This league featured 22 teams and over 150 entrants and ran during October and November 2021.
