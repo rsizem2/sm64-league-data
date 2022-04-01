@@ -98,6 +98,12 @@ if __name__ == '__main__':
     runs['Category'] = runs['Category'].astype(int)
     runs['Date Accepted'] = runs['Date Accepted'].dt.date
     
+    # Add Teams
+    teams = players['Team'].to_dict()
+    pbd_in_0 = {x:False for x in teams.keys()}
+    pbd_in_1 = {x:False for x in teams.keys()}
+    runs['Team'] = runs['Player'].apply(lambda x : teams[x])
+    
     # Calculate Points
     runs['Points'] = 0
     current_1star = players['Initial 1 Star PB'].to_dict()
@@ -109,18 +115,19 @@ if __name__ == '__main__':
         else:
             old_pb = current_1star[temp['Player']]
         new_pb = temp['Time']
-        points = points = get_points(category, old_pb, new_pb)
+        points = get_points(category, old_pb, new_pb)
         runs.loc[index, 'Points'] = points
         if temp['Category'] == 0:
             current_0star[temp['Player']] = new_pb
+            if not pbd_in_0[temp['Player']]:
+                pbd_in_0[temp['Player']] = True
+                runs.loc[index, 'Points'] += 2000
         else:
             current_1star[temp['Player']] = new_pb
-    
-    # Add Teams
-    teams = players['Team'].to_dict()
-    runs['Team'] = runs['Player'].apply(lambda x : teams[x])
-    runs = runs[['Date Accepted','Player','Team','Category','Time','Points']]
-    
+            if not pbd_in_1[temp['Player']]:
+                pbd_in_1[temp['Player']] = True
+                runs.loc[index, 'Points'] += 500
+
     # Final formatting
     players['Initial 0 Star PB'] = players['Initial 0 Star PB'].astype(str).apply(lambda x: x[7:])
     players['Initial 1 Star PB'] = players['Initial 1 Star PB'].astype(str).apply(lambda x: x[7:])
@@ -129,6 +136,7 @@ if __name__ == '__main__':
     runs['Time'] = runs['Time'].astype(str).apply(lambda x: x[7:])
     runs['Points'] = runs['Points'].astype(int)
     players['Points'] = players['Points'].astype(int)
+    runs = runs[['Date Accepted','Player','Team','Category','Time','Points']]
 
     # CSV
     players.to_csv('../data/2022-03_sblj_league_players.csv')
