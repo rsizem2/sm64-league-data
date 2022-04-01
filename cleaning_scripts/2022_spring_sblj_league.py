@@ -9,7 +9,7 @@ from datetime import timedelta
 
 def convert_to_time(timestring):
     timestring = str(timestring)
-    temp = list(map(int, timestring.split(':')))
+    temp = list(map(lambda x: round(int(x)), timestring.split(':')))
     if len(temp) == 2:
         # M:SS
         return timedelta(minutes = temp[0], seconds = temp[1])
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     csv_export_url = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     initial = pd.read_csv(csv_export_url)
     for category in [0,1]:
-      initial[f'Initial {category} Star PB'] = pd.to_timedelta(initial[f'{category} Star PB'])
+        initial[f'Initial {category} Star PB'] = initial[f'{category} Star PB'].astype(str).apply(lambda x: convert_to_time(x))
     initial['Player'] = initial['Player'].astype(str).str.strip()
     initial['Player'] = initial['Player'].str.lower()
     initial.set_index('Player', inplace = True)
@@ -115,7 +115,7 @@ if __name__ == '__main__':
         else:
             old_pb = current_1star[temp['Player']]
         new_pb = temp['Time']
-        points = get_points(category, old_pb, new_pb)
+        points = get_points(temp['Category'], old_pb, new_pb)
         runs.loc[index, 'Points'] = points
         if temp['Category'] == 0:
             current_0star[temp['Player']] = new_pb
