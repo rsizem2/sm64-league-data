@@ -145,5 +145,5 @@ if __name__ == '__main__':
     players['Points'] = players['Points'].astype(int)
     
     # CSV
-    players.to_csv('../data/2021-10_sm64_league_players.csv')
-    runs.to_csv('../data/2021-10_sm64_league_runs.csv')
+    players.to_csv('../data/2021-10_sm64_league_players.csv', index = False)
+    runs.to_csv('../data/2021-10_sm64_league_runs.csv', index = False)
