@@ -137,6 +137,8 @@ if __name__ == '__main__':
     runs['Points'] = runs['Points'].astype(int)
     players['Points'] = players['Points'].astype(int)
     runs = runs[['Date Accepted','Player','Team','Category','Time','Points']]
+    players = players.sort_values('Points', ascending = False)
+    players.reset_index(inplace = True)
 
     # CSV
     players.to_csv('../data/2022-03_sblj_league_players.csv', index = False)
