@@ -48,8 +48,11 @@ if __name__ == '__main__':
     csv_export_url = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     players = pd.read_csv(csv_export_url, usecols = ['Player', 'Team', '120 Star PB', '70 Star PB', '16 Star PB'])    
     players['120 Star PB'] = pd.to_timedelta(players['120 Star PB'])
+    players['Initial 120 Star PB'] = players['120 Star PB']
     players['70 Star PB'] = pd.to_timedelta(players['70 Star PB'])
+    players['Initial 70 Star PB'] = players['70 Star PB']
     players['16 Star PB'] = pd.to_timedelta(players['16 Star PB'])
+    players['Initial 16 Star PB'] = players['16 Star PB']
     players['Player'] = players['Player'].str.lower()
     players.loc[players.Player == 'thetoiletboyz', ['Player']] = 'toilet64_'
     players.set_index('Player', inplace = True)
@@ -118,9 +121,9 @@ if __name__ == '__main__':
 
 
     players = pd.DataFrame.from_dict(players, 'index')
-    players['120 Star PB'] = players['120 Star PB'].astype(str).apply(lambda x: x[7:])
-    players['70 Star PB'] = players['70 Star PB'].astype(str).apply(lambda x: x[7:])
-    players['16 Star PB'] = players['16 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Final 120 Star PB'] = players['120 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Final 70 Star PB'] = players['70 Star PB'].astype(str).apply(lambda x: x[7:])
+    players['Final 16 Star PB'] = players['16 Star PB'].astype(str).apply(lambda x: x[7:])
     players = players.sort_values('Points', ascending = False)
     players.reset_index(inplace = True)
     players.rename(columns={'index':'Player'}, inplace = True)
@@ -132,9 +135,12 @@ if __name__ == '__main__':
     players['Team'] = players['Team'].str.lower()
     
     # Final formatting before exporting
-    players = players[['Player', 'Team', '16 Star PB', '70 Star PB', '120 Star PB', 'Points']]
+    players = players[['Player', 'Team', 'Initial 16 Star PB', 'Initial 70 Star PB', 'Initial 120 Star PB', 
+                       'Final 16 Star PB', 'Final 70 Star PB', 'Final 120 Star PB', 'Points']]
     runs = runs[['Date Accepted', 'Player', 'Team', 'Category', 'Time', 'Points']]
     runs['Time'] = runs['Time'].astype(str).apply(lambda x: x[7:])
+    runs['Points'] = runs['Points'].astype(int)
+    players['Points'] = players['Points'].astype(int)
     
     # CSV
     players.to_csv('../data/2021-10_sm64_league_players.csv')

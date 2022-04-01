@@ -81,8 +81,10 @@ if __name__ == '__main__':
     initial.set_index('Player', inplace = True)
     
     players = pd.concat([initial[['Initial 1 Star PB', 'Initial 0 Star PB']], players], axis = 1, join = 'inner')
-    players = players[['Team','Initial 0 Star PB','Final 0 Star PB','Initial 1 Star PB','Final 1 Star PB',
-                       '0 Star Points','1 Star Points','Bonus  0 Points','Bonus 1 Points','Total Points']]
+    players['0 Star Points'] += players['Bonus  0 Points']
+    players['1 Star Points'] += players['Bonus 1 Points']
+    players['Points'] = players['Total Points']
+    players = players[['Team','Initial 0 Star PB','Final 0 Star PB','Initial 1 Star PB','Final 1 Star PB','Points']]
     
     # Runs
     sheet_url = 'https://docs.google.com/spreadsheets/d/1zgh5SihpX5XJ1LjYJcaIzyLgEk5vW3oNvPGrynfG6Ps/edit#gid=431627827'
@@ -119,12 +121,14 @@ if __name__ == '__main__':
     runs['Team'] = runs['Player'].apply(lambda x : teams[x])
     runs = runs[['Date Accepted','Player','Team','Category','Time','Points']]
     
-    # Format timedelta strings
+    # Final formatting
     players['Initial 0 Star PB'] = players['Initial 0 Star PB'].astype(str).apply(lambda x: x[7:])
     players['Initial 1 Star PB'] = players['Initial 1 Star PB'].astype(str).apply(lambda x: x[7:])
     players['Final 0 Star PB'] = players['Final 0 Star PB'].astype(str).apply(lambda x: x[7:])
     players['Final 1 Star PB'] = players['Final 1 Star PB'].astype(str).apply(lambda x: x[7:])
     runs['Time'] = runs['Time'].astype(str).apply(lambda x: x[7:])
+    runs['Points'] = runs['Points'].astype(int)
+    players['Points'] = players['Points'].astype(int)
 
     # CSV
     players.to_csv('../data/2022-03_sblj_league_players.csv')
